@@ -1,10 +1,10 @@
-import {UniswapExchangeInterface} from "./typechain/UniswapExchangeInterface";
-import {ERC20} from "./typechain/ERC20";
-import {FutureCash} from "./typechain/FutureCash";
+import {UniswapExchangeInterface} from "../typechain/UniswapExchangeInterface";
+import {ERC20} from "../typechain/ERC20";
+import {FutureCash} from "../typechain/FutureCash";
 
-import ERC20Artifact from "./abi/ERC20.json";
-import FutureCashArtifact from "./abi/FutureCash.json";
-import UniswapExchangeArtifact from "./abi/UniswapExchangeInterface.json";
+import ERC20Artifact from "../abi/ERC20.json";
+import FutureCashArtifact from "../abi/FutureCash.json";
+import UniswapExchangeArtifact from "../abi/UniswapExchangeInterface.json";
 import { Signer, Contract } from "ethers";
 
 export class SwapnetLite {

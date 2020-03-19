@@ -36,3 +36,18 @@
     transform: rotate(360deg);
   }
 }
+
+.tab a.active {
+  color:rgb(252, 234, 37)!important;
+  background-color:#448AFF!important;
+}
+.tabs .tab a:hover {
+  background-color: #bcaaa4!important;
+  color:#FFFFFF!important;
+}
+.tabs .tab a {
+  color: #efebe9!important;
+}
+.tabs .indicator{
+  background-color:#FFFFFF!important;
+}
