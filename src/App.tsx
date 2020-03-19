@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
 import Github from './github.png';
-import { Signer } from 'ethers';
+import { Signer, ethers } from 'ethers';
 import { Web3Provider } from 'ethers/providers';
 import { Row, Col, Button, Tab, Tabs} from 'react-materialize';
 import { BigNumber, Network } from 'ethers/utils';
@@ -11,6 +11,7 @@ import {MarketTable} from './components/MarketTable';
 import {Balances} from './components/Balances';
 import {formatBalance } from './utils/format';
 import { CashLadder } from './components/CashLadder';
+import { TransactionHistory } from './components/TransactionHistory';
 
 const NETWORK_NAME = process.env.REACT_APP_NETWORK;
 const GRAPH_URL = process.env.REACT_APP_GRAPH_URL as string;
@@ -32,6 +33,7 @@ interface AppState {
   currentBlockNumber: number;
   swapnetLite: SwapnetLite;
   account: SwapnetAccount;
+  ethTokenPrice: BigNumber;
 }
 
 export default class App extends React.Component<AppProp, AppState> {
@@ -68,7 +70,8 @@ export default class App extends React.Component<AppProp, AppState> {
             web3.getBlockNumber(),
             getAccount(GRAPH_URL, address),
             swapnetLite.futureCash.freeCollateral(address),
-            web3.getNetwork()
+            web3.getNetwork(),
+            swapnetLite.uniswap.getEthToTokenInputPrice(ethers.constants.WeiPerEther)
           ]).then((values) => {
             this.setState({
               address: address,
@@ -81,7 +84,8 @@ export default class App extends React.Component<AppProp, AppState> {
               account: values[3],
               freeCollateral: values[4],
               network: values[5],
-            })
+              ethTokenPrice: values[6]
+            });
           })
 
           if (this.state.network.name !== NETWORK_NAME) {
@@ -121,7 +125,7 @@ export default class App extends React.Component<AppProp, AppState> {
               Dai: {formatBalance(this.state.daiWalletBalance)}<br/>
               Eth: {formatBalance(this.state.ethWalletBalance)}<br/>
               Block: {this.state.currentBlockNumber}<br/>
-              DAI/ETH: 100
+              DAI/ETH: {formatBalance(this.state.ethTokenPrice)}
             </p>
           </Col>
           <Col s={6}>
@@ -151,7 +155,7 @@ export default class App extends React.Component<AppProp, AppState> {
               <CashLadder account={this.state.account} />
             </Tab>
             <Tab title="Transaction History">
-
+              <TransactionHistory account={this.state.account} />
             </Tab>
           </Tabs>
         </Row>

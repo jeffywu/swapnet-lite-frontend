@@ -1,5 +1,4 @@
 import {request} from "graphql-request";
-import { BigNumber } from "ethers/utils";
 
 export interface Asset {
   id: string;
@@ -8,12 +7,21 @@ export interface Asset {
   tradeType: string;
 }
 
+export interface Transaction {
+  id: string;
+  tradeType: string;
+  maturity: number;
+  futureCash: BigInt;
+  daiAmount: BigInt;
+}
+
 export interface SwapnetAccount {
   id: string;
   daiBalance: BigInt;
   ethBalance: BigInt;
   cashBalance: BigInt;
   portfolio: Asset[];
+  transactions: Transaction[];
 }
 
 function accountQuery(address: string) { 
@@ -28,6 +36,13 @@ function accountQuery(address: string) {
         maturity
         notional
         tradeType
+      }
+      transactions {
+        id
+        tradeType
+        maturity
+        futureCash
+        daiAmount
       }
     }
   }`);

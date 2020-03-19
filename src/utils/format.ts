@@ -5,6 +5,18 @@ import { Asset } from "../queries";
 const RATE_PRECISION = 1_000_000_000;
 const BALANCE_PRECISION = 1_000_000_000_000_000;
 
+export function calculateAnnualizedRate(dai: BigNumber, futureCash: BigNumber): string {
+  return ((futureCash
+          .sub(dai)
+          .mul(RATE_PRECISION)
+          .div(dai)
+          .mul(12)
+          .add(RATE_PRECISION)
+          .toNumber()) / RATE_PRECISION)
+          .toPrecision(4)
+          .toString() + "%";
+}
+
 export function formatBigInt(num: BigInt): string {
   return formatBalance(new BigNumber(num.toString()));
 }
