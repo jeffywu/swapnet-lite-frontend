@@ -4,10 +4,12 @@ import { SwapnetAccount } from "../queries";
 import { SwapnetLite } from "../utils/swapnetLite";
 import { ethers } from "ethers";
 import { Table } from 'react-materialize';
-import { TransactModal } from './TransactModal';
 import { formatRate } from "../utils/format";
+import { Lend, Borrow } from "./TransactModal";
 
-interface Maturity {
+const HELPTEXT = "Lend and Borrow Dai at fixed rates for these maturities.";
+
+export interface Maturity {
   marketRate: number;
   maturity: number;
   totalCollateral: BigNumber;
@@ -15,45 +17,21 @@ interface Maturity {
   totalLiquidity: BigNumber;
 }
 
-interface SwapTableState {
+interface MarketTableState {
   maturities: Maturity[];
+  liquidityFee: BigNumber;
 }
 
-interface SwapTableProps {
+interface MarketTableProps {
   account: SwapnetAccount;
   swapnetLite: SwapnetLite;
+  currentBlockNumber: number;
 }
 
-export class MarketTable extends React.Component<SwapTableProps, SwapTableState> {
-
-  constructor(props: SwapTableProps) {
-    super(props);
-
-    this.handleLending = this.handleLending.bind(this);
-    this.handleBorrowing = this.handleBorrowing.bind(this);
-    this.updateHelpTextLending = this.updateHelpTextLending.bind(this);
-    this.updateHelpTextBorrowing = this.updateHelpTextBorrowing.bind(this);
-  }
-
-  handleLending(maturity: number, input: string) {
-    let amount = ethers.utils.parseEther(input);
-    this.props.swapnetLite.futureCash.takeFutureCash(maturity, amount);
-  }
-
-  handleBorrowing(maturity: number, input: string) {
-    let amount = ethers.utils.parseEther(input);
-    this.props.swapnetLite.futureCash.takeDai(maturity, amount);
-  }
-
-  async updateHelpTextLending() {
-    return (<span></span>);
-  }
-
-  async updateHelpTextBorrowing() {
-    return (<span></span>);
-  }
+export class MarketTable extends React.Component<MarketTableProps, MarketTableState> {
 
   async loadPortfolio() {
+    let liquidityFee = await this.props.swapnetLite.futureCash.G_LIQUIDITY_FEE();
     let maturities = await this.props.swapnetLite.futureCash.getActiveMaturities();
     let state = await Promise.all(maturities.map(async (m, i) => {
       let market = await this.props.swapnetLite.futureCash.markets(m);
@@ -69,15 +47,15 @@ export class MarketTable extends React.Component<SwapTableProps, SwapTableState>
     }));
 
     this.setState({
-      maturities: state
+      maturities: state,
+      liquidityFee: liquidityFee
     });
   }
 
-
   render() {
-    if (this.props.swapnetLite == null) {
+    if (this.props.swapnetLite === undefined) {
       return <div></div>;
-    } else if (this.props.swapnetLite != null) {
+    } else {
       this.loadPortfolio();
     } 
 
@@ -85,44 +63,50 @@ export class MarketTable extends React.Component<SwapTableProps, SwapTableState>
       return <div></div>;
     } else {
       return (
-        <Table className="centered">
-          <thead className="teal-text text-lighten-2 center-align">
-            <tr>
-              <th data-field="maturites"><h5>Maturities</h5></th>
-              <th data-field="lend"><h5>Lend</h5></th>
-              <th data-field="rate"><h5>Market Rate</h5></th>
-              <th data-field="borrow"><h5>Borrow</h5></th>
-            </tr>
-          </thead>
-          <tbody>
-            {this.state.maturities.map((m, i) => {
-              return (
+        <div>
+          <p>{HELPTEXT}</p>
+          <Table className="centered">
+            <thead className="teal-text text-lighten-2 center-align">
               <tr>
-                <td><h6>Block {m.maturity}</h6></td>
-                <td>
-                  <TransactModal 
-                    buttonText="Lend Dai"
-                    submitAction={this.handleLending} 
-                    updateHelpText={this.updateHelpTextLending}
-                    maturity={m.maturity}
-                  />
-                </td>
-                <td>
-                  <h6>{formatRate(m.marketRate)}</h6>
-                </td>
-                <td>
-                  <TransactModal 
-                    buttonText="Borrow Dai"
-                    submitAction={this.handleBorrowing} 
-                    updateHelpText={this.updateHelpTextBorrowing}
-                    maturity={m.maturity}
-                  />
-                </td>
-              </tr>)
-            })}
-          </tbody>
-        </Table>
-      )
+                <th data-field="maturites"><h5>Maturities</h5></th>
+                <th data-field="lend"><h5>Lend</h5></th>
+                <th data-field="rate"><h5>Market Rate</h5></th>
+                <th data-field="borrow"><h5>Borrow</h5></th>
+              </tr>
+            </thead>
+            <tbody>
+              {this.state.maturities.map((m, i) => {
+                return (
+                <tr key={i}>
+                  <td><h6>Block {m.maturity}</h6></td>
+                  <td>
+                    <Lend 
+                      address={this.props.account.id}
+                      swapnetLite={this.props.swapnetLite}
+                      account={this.props.account}
+                      maturity={m}
+                      currentBlockNumber={this.props.currentBlockNumber}
+                      liquidityFee={this.state.liquidityFee}
+                    />
+                  </td>
+                  <td>
+                    <h6>{formatRate(m.marketRate)}</h6>
+                  </td>
+                  <td>
+                    <Borrow 
+                      address={this.props.account.id}
+                      swapnetLite={this.props.swapnetLite}
+                      account={this.props.account}
+                      maturity={m}
+                      currentBlockNumber={this.props.currentBlockNumber}
+                      liquidityFee={this.state.liquidityFee}
+                    />
+                  </td>
+                </tr>)
+              })}
+            </tbody>
+          </Table>
+      </div>)
     }
   }
 }

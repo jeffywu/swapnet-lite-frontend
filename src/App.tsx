@@ -37,11 +37,10 @@ interface AppState {
 }
 
 export default class App extends React.Component<AppProp, AppState> {
-  state = {} as AppState;
+  state = {} as AppState
 
   constructor(props: AppProp) {
     super(props);
-
     this.handleFaucet = this.handleFaucet.bind(this);
   }
 
@@ -49,7 +48,7 @@ export default class App extends React.Component<AppProp, AppState> {
     this.state.swapnetLite.dai.mint();
   }
 
-  async loadBlockChain() {
+  async loadBlockchain() {
     // Modern DApp Browsers
     let web3: Web3Provider;
     if ((window as any).ethereum) {
@@ -105,9 +104,9 @@ export default class App extends React.Component<AppProp, AppState> {
   }
 
   componentDidMount() {
-    this.loadBlockChain();
+    this.loadBlockchain();
     this.setState({
-      timer: setInterval(() => this.loadBlockChain(), 2000)
+      timer: setInterval(() => this.loadBlockchain(), 2000)
     });
   }
 
@@ -145,13 +144,21 @@ export default class App extends React.Component<AppProp, AppState> {
           account={this.state.account}
           swapnetLite={this.state.swapnetLite}
           freeCollateral={this.state.freeCollateral}
+          daiWalletBalance={this.state.daiWalletBalance}
+          ethWalletBalance={this.state.ethWalletBalance}
           />
         <Row className="container">
-          <MarketTable account={this.state.account} swapnetLite={this.state.swapnetLite}/>
         </Row>
         <Row className="container" style={{ marginTop: '2.5em'}}>
           <Tabs className="deep-purple lighten-1">
-            <Tab title="Cash Ladder" className="white-text">
+            <Tab title="Lend/Borrow">
+              <MarketTable 
+                account={this.state.account}
+                swapnetLite={this.state.swapnetLite}
+                currentBlockNumber={this.state.currentBlockNumber}
+              />
+            </Tab>
+            <Tab title="Cash Ladder">
               <CashLadder account={this.state.account} />
             </Tab>
             <Tab title="Transaction History">

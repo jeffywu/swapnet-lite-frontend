@@ -1,13 +1,13 @@
 import {request} from "graphql-request";
 
-export interface Asset {
+interface Asset {
   id: string;
   maturity: number;
   notional: BigInt;
   tradeType: string;
 }
 
-export interface Transaction {
+interface Transaction {
   id: string;
   tradeType: string;
   maturity: number;
