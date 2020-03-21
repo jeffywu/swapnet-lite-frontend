@@ -12,6 +12,7 @@
     "@types/react-dom": "^16.9.5",
     "dotenv": "^8.2.0",
     "ethers": "^4.0.45",
+    "gh-pages": "^2.2.0",
     "graphql-request": "^1.8.2",
     "react": "^16.13.0",
     "react-dom": "^16.13.0",
@@ -23,7 +24,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -39,5 +42,6 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "homepage": "http://swapnet-protocol.github.io/swapnet-lite-frontend/"
 }
