@@ -1,4 +1,5 @@
 import {request} from "graphql-request";
+import { AddressZero } from "ethers/constants";
 
 interface Asset {
   id: string;
@@ -23,6 +24,15 @@ export interface SwapnetAccount {
   portfolio: Asset[];
   transactions: Transaction[];
 }
+
+export let EmptyAccount = {
+  id: AddressZero,
+  daiBalance: BigInt(0),
+  ethBalance: BigInt(0),
+  cashBalance: BigInt(0),
+  portfolio: [],
+  transactions: []
+} as SwapnetAccount;
 
 function accountQuery(address: string) { 
   return (`{
@@ -50,5 +60,9 @@ function accountQuery(address: string) {
 
 export async function getAccount(graphUrl: string, address: string) {
   let result = (await request(graphUrl, accountQuery(address.toLowerCase())))['account'];
-  return result as SwapnetAccount;
+  if (result == null) {
+    return EmptyAccount;
+  } else {
+    return result as SwapnetAccount;
+  }
 }

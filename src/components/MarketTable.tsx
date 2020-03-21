@@ -2,7 +2,6 @@ import React from "react";
 import { BigNumber } from "ethers/utils";
 import { SwapnetAccount } from "../queries";
 import { SwapnetLite } from "../utils/swapnetLite";
-import { ethers } from "ethers";
 import { Table } from 'react-materialize';
 import { formatRate } from "../utils/format";
 import { Lend, Borrow } from "./TransactModal";
