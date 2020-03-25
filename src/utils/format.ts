@@ -4,6 +4,13 @@ import { ethers } from "ethers";
 export const RATE_PRECISION = 1_000_000_000;
 export const BASIS_POINT = RATE_PRECISION / 100;
 export const BALANCE_PRECISION = 1_000_000_000_000_000;
+const AVERAGE_BLOCK_TIME_MS = parseInt(process.env.REACT_APP_AVERAGE_BLOCK_TIME_MS as string);
+const GENESIS_BLOCK_TIME_MS = parseInt(process.env.REACT_APP_GENESIS_BLOCK_TIME_MS as string);
+
+export function formatBlock(maturity: number): string {
+  let blockTime = new Date(maturity * AVERAGE_BLOCK_TIME_MS + GENESIS_BLOCK_TIME_MS);
+  return `${blockTime.toLocaleDateString()} (Block ${maturity})`;
+}
 
 export function calculateAnnualizedRate(dai: BigNumber, futureCash: BigNumber): BigNumber {
   return futureCash

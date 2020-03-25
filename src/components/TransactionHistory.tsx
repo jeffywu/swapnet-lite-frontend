@@ -1,6 +1,6 @@
 import { SwapnetAccount } from "../queries";
 import { BigNumber } from "ethers/utils/bignumber";
-import { formatTradeType, formatBigInt, calculateAnnualizedRate, formatAnnualizedRate } from "../utils/format";
+import { formatTradeType, formatBigInt, calculateAnnualizedRate, formatAnnualizedRate, formatBlock } from "../utils/format";
 import { Table } from 'react-materialize';
 import React from "react";
 
@@ -33,7 +33,7 @@ export class TransactionHistory extends React.Component<{account: SwapnetAccount
               {sortedTransactions.map((t, i) => {
                 return (
                   <tr key={i}>
-                    <td>Block {t.maturity}</td>
+                    <td>{formatBlock(t.maturity)}</td>
                     <td>{formatTradeType(t.tradeType)}</td>
                     <td>{formatBigInt(t.daiAmount)} Dai</td>
                     <td>{formatBigInt(t.futureCash)} Dai</td>

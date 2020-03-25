@@ -1,5 +1,5 @@
 import { SwapnetAccount } from "../queries";
-import { formatTradeType, formatBigInt } from "../utils/format";
+import { formatTradeType, formatBigInt, formatBlock } from "../utils/format";
 import { Table } from 'react-materialize';
 import React from "react";
 
@@ -30,7 +30,7 @@ export class CashLadder extends React.Component<{account: SwapnetAccount}, {}> {
               {sortedPortfolio.map((a, i) => {
                 return (
                   <tr key={i}>
-                    <td><h6>Block {a.maturity}</h6></td>
+                    <td><h6>{formatBlock(a.maturity)}</h6></td>
                     <td><h6>{formatTradeType(a.tradeType)}</h6></td>
                     <td><h6>{formatBigInt(a.notional)} Dai</h6></td>
                   </tr>

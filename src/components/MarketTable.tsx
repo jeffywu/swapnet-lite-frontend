@@ -3,7 +3,7 @@ import { BigNumber } from "ethers/utils";
 import { SwapnetAccount } from "../queries";
 import { SwapnetLite } from "../utils/swapnetLite";
 import { Table } from 'react-materialize';
-import { formatRate } from "../utils/format";
+import { formatRate, formatBlock } from "../utils/format";
 import { Lend, Borrow } from "./TransactModal";
 
 const HELPTEXT = "Lend and Borrow Dai at fixed rates for these maturities.";
@@ -78,7 +78,7 @@ export class MarketTable extends React.Component<MarketTableProps, MarketTableSt
               {this.state.maturities.map((m, i) => {
                 return (
                 <tr key={i}>
-                  <td><h6>Block {m.maturity}</h6></td>
+                  <td><h6>{formatBlock(m.maturity)}</h6></td>
                   <td>
                     <Lend 
                       address={this.props.account.id}
