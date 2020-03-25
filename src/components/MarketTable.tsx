@@ -25,6 +25,7 @@ interface MarketTableProps {
   account: SwapnetAccount;
   swapnetLite: SwapnetLite;
   currentBlockNumber: number;
+  freeCollateral: BigNumber;
 }
 
 export class MarketTable extends React.Component<MarketTableProps, MarketTableState> {
@@ -86,6 +87,7 @@ export class MarketTable extends React.Component<MarketTableProps, MarketTableSt
                       maturity={m}
                       currentBlockNumber={this.props.currentBlockNumber}
                       liquidityFee={this.state.liquidityFee}
+                      freeCollateral={this.props.freeCollateral}
                     />
                   </td>
                   <td>
@@ -99,6 +101,7 @@ export class MarketTable extends React.Component<MarketTableProps, MarketTableSt
                       maturity={m}
                       currentBlockNumber={this.props.currentBlockNumber}
                       liquidityFee={this.state.liquidityFee}
+                      freeCollateral={this.props.freeCollateral}
                     />
                   </td>
                 </tr>)

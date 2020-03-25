@@ -67,9 +67,100 @@ interface BaseTransactProps {
 }
 
 interface BaseTransactState {
-  depositValue: string;
+  transactValue: string;
   allowanceValue: string;
   allowance: BigNumber;
+}
+
+export class WithdrawDai extends React.Component<BaseTransactProps, BaseTransactState> {
+  constructor(props: BaseTransactProps) {
+    super(props);
+    this.state = {
+      transactValue: '',
+      allowanceValue: '',
+      allowance: new BigNumber(0)
+    };
+
+    this.handleWithdrawAmountChange = this.handleWithdrawAmountChange.bind(this);
+    this.handleWithdraw = this.handleWithdraw.bind(this);
+  }
+
+  handleWithdraw() {
+    let amount = ethers.utils.parseEther(this.state.transactValue);
+    this.props.swapnetLite.futureCash.withdrawDai(amount);
+  }
+
+  handleWithdrawAmountChange(event: any) {
+    this.setState({transactValue: event.target.value})
+  }
+
+  render() {
+    return makeTransactModal({
+      buttonText: "Withdraw Dai",
+      submitAction: this.handleWithdraw,
+      leftColumn:
+        <span>
+          <h6>Dai Balance: {formatBigInt(this.props.account.daiBalance)}</h6>
+          <h6>Eth Balance: {formatBigInt(this.props.account.ethBalance)}</h6>
+        </span>,
+      centerColumn:
+        <span></span>,
+      rightColumn:
+        <span>
+          <TextInput
+            label="Withdraw Dai"
+            onChange={this.handleWithdrawAmountChange}
+          />
+        </span>
+    });
+  }
+}
+
+export class WithdrawEth extends React.Component<BaseTransactProps, BaseTransactState> {
+  constructor(props: BaseTransactProps) {
+    super(props);
+    this.state = {
+      transactValue: '',
+      allowanceValue: '',
+      allowance: new BigNumber(0)
+    };
+
+    this.handleWithdrawAmountChange = this.handleWithdrawAmountChange.bind(this);
+    this.handleWithdraw = this.handleWithdraw.bind(this);
+  }
+
+  handleWithdraw() {
+    let amount = ethers.utils.parseEther(this.state.transactValue);
+    console.log(amount);
+    this.props.swapnetLite.futureCash.withdrawEth(amount).then(() => {
+      this.props.swapnetLite.futureCash.ethBalances(this.props.address).then(console.log);
+    });
+  }
+
+  handleWithdrawAmountChange(event: any) {
+    this.setState({transactValue: event.target.value})
+  }
+
+  render() {
+    return makeTransactModal({
+      buttonText: "Withdraw Eth",
+      submitAction: this.handleWithdraw,
+      leftColumn:
+        <span>
+          <h6>Dai Balance: {formatBigInt(this.props.account.daiBalance)}</h6>
+          <h6>Eth Balance: {formatBigInt(this.props.account.ethBalance)}</h6>
+        </span>,
+      centerColumn:
+        <span></span>,
+      rightColumn:
+        <span>
+          <TextInput
+            label="Withdraw Eth"
+            onChange={this.handleWithdrawAmountChange}
+          />
+        </span>
+    });
+  }
 }
 
 export class DepositDai extends React.Component<BaseTransactProps, BaseTransactState> {
@@ -77,7 +168,7 @@ export class DepositDai extends React.Component<BaseTransactProps, BaseTransactS
   constructor(props: BaseTransactProps) {
     super(props);
     this.state = {
-      depositValue: '',
+      transactValue: '',
       allowanceValue: '',
       allowance: new BigNumber(0)
     };
@@ -98,7 +189,7 @@ export class DepositDai extends React.Component<BaseTransactProps, BaseTransactS
   }
 
   handleDepositAmountChange(event: any) {
-    this.setState({depositValue: event.target.value})
+    this.setState({transactValue: event.target.value})
   }
 
   async setDepositAllowance(value: string) {
@@ -115,7 +206,7 @@ export class DepositDai extends React.Component<BaseTransactProps, BaseTransactS
   }
 
   handleDeposit() {
-    let amount = ethers.utils.parseEther(this.state.depositValue);
+    let amount = ethers.utils.parseEther(this.state.transactValue);
     this.props.swapnetLite.futureCash.depositDai(amount);
   }
 
@@ -159,12 +250,12 @@ export class DepositDai extends React.Component<BaseTransactProps, BaseTransactS
 }
 
 export class DepositEth extends React.Component<BaseTransactProps,
-  {depositValue: string}> {
+  {transactValue: string}> {
 
   constructor(props: BaseTransactProps) {
     super(props);
     this.state = {
-      depositValue: '',
+      transactValue: '',
     };
 
     this.handleDepositAmountChange = this.handleDepositAmountChange.bind(this);
@@ -172,11 +263,11 @@ export class DepositEth extends React.Component<BaseTransactProps,
   }
 
   handleDepositAmountChange(event: any) {
-    this.setState({depositValue: event.target.value})
+    this.setState({transactValue: event.target.value})
   }
 
   handleDeposit() {
-    let amount = ethers.utils.parseEther(this.state.depositValue);
+    let amount = ethers.utils.parseEther(this.state.transactValue);
     this.props.swapnetLite.futureCash.depositEth({value: amount});
   }
 
@@ -219,6 +310,7 @@ interface LendBorrowProps {
   maturity: Maturity;
   currentBlockNumber: number;
   liquidityFee: BigNumber;
+  freeCollateral: BigNumber;
 }
 
 export class Lend extends React.Component<LendBorrowProps, LendBorrowState> {
@@ -409,7 +501,7 @@ export class Borrow extends React.Component<LendBorrowProps, LendBorrowState> {
       submitAction: this.handleTransaction,
       leftColumn:
         <span>
-          <h6>Max Lending Amount: {formatBigInt(this.props.account.daiBalance)}</h6>
+          <h6>Max Borrowing Amount: {formatBalance(this.props.freeCollateral)}</h6>
           <h6>Maturity: {formatMaturity(this.props.maturity.maturity)}</h6>
           <h6>Due at Maturity: {formatBalance(this.state.projectedFutureCash)}</h6>
           <h6>Interest Amount: {formatBalance(this.state.projectedFutureCash.sub(this.state.projectedDai))}</h6>

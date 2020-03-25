@@ -3,7 +3,7 @@ import { SwapnetAccount } from "../queries";
 import { SwapnetLite } from "../utils/swapnetLite";
 import { BigNumber } from "ethers/utils";
 import { formatBalance, formatBigInt } from "../utils/format";
-import { DepositDai, DepositEth } from "./TransactModal";
+import { DepositDai, DepositEth, WithdrawDai, WithdrawEth } from "./TransactModal";
 import { Row, Col,  Button } from 'react-materialize';
 
 interface BalancesProps {
@@ -39,35 +39,67 @@ export class Balances extends React.Component<BalancesProps, {}> {
     return (
       <div className="container" style={{ border: "solid", borderWidth: "thin", borderColor: "#00bfa5" }}>
         <Row>
-          <h4>Deposits</h4>
+          <h4>Account Balances</h4>
           <p>Deposit and withdraw collateral balances in order to trade.</p>
-          <Col s={4}>
-            <h4>Dai: {dai}</h4>
-            <DepositDai 
-              walletBalance={this.props.daiWalletBalance}
-              address={this.props.address}
-              swapnetLite={this.props.swapnetLite}
-              account={this.props.account}
-            />
+        </Row>
+        <Row>
+          <Col s={4}><h5>Dai: {dai}</h5></Col>
+          <Col s={3}>
+            <p>
+              <DepositDai 
+                walletBalance={this.props.daiWalletBalance}
+                address={this.props.address}
+                swapnetLite={this.props.swapnetLite}
+                account={this.props.account}
+              />
+            </p>
           </Col>
-          <Col s={4}>
-            <h4>Eth: {eth}</h4>
-            <DepositEth 
-              walletBalance={this.props.ethWalletBalance}
-              address={this.props.address}
-              swapnetLite={this.props.swapnetLite}
-              account={this.props.account}
-            />
-          </Col>
-          <Col s={4}>
-            <h4>Cash: {cash}</h4>
-            <Button node="button" waves="light" onClick={this.handleSettleCash}>
-              Settle Cash
-            </Button>
+          <Col s={3}>
+            <p>
+              <WithdrawDai 
+                walletBalance={this.props.daiWalletBalance}
+                address={this.props.address}
+                swapnetLite={this.props.swapnetLite}
+                account={this.props.account}
+              />
+            </p>
           </Col>
         </Row>
         <Row>
-          <h6>Free Collateral: {freeCollateral} Dai</h6>
+          <Col s={4}><h5>Eth: {eth}</h5></Col>
+          <Col s={3}>
+            <p>
+              <DepositEth 
+                walletBalance={this.props.ethWalletBalance}
+                address={this.props.address}
+                swapnetLite={this.props.swapnetLite}
+                account={this.props.account}
+              />
+            </p>
+          </Col>
+          <Col s={3}>
+            <p>
+              <WithdrawEth 
+                walletBalance={this.props.ethWalletBalance}
+                address={this.props.address}
+                swapnetLite={this.props.swapnetLite}
+                account={this.props.account}
+              />
+            </p>
+          </Col>
+        </Row>
+        <Row>
+          <Col s={4}><h5>Cash: {cash}</h5></Col>
+          <Col s={3}>
+            <p>
+              <Button node="button" waves="light" onClick={this.handleSettleCash}>
+                Settle Cash
+              </Button>
+            </p>
+          </Col>
+        </Row>
+        <Row>
+          <h6>Max Borrowing Amount (Free Collateral): {freeCollateral} Dai</h6>
         </Row>
       </div>
     )

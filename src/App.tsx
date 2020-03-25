@@ -156,6 +156,7 @@ export default class App extends React.Component<AppProp, AppState> {
                 account={this.state.account}
                 swapnetLite={this.state.swapnetLite}
                 currentBlockNumber={this.state.currentBlockNumber}
+                freeCollateral={this.state.freeCollateral}
               />
             </Tab>
             <Tab title="Cash Ladder">
