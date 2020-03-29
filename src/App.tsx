@@ -34,6 +34,7 @@ interface AppState {
   swapnetLite: SwapnetLite;
   account: SwapnetAccount;
   ethTokenPrice: BigNumber;
+  periodSize: number;
 }
 
 export default class App extends React.Component<AppProp, AppState> {
@@ -70,7 +71,8 @@ export default class App extends React.Component<AppProp, AppState> {
             getAccount(GRAPH_URL, address),
             swapnetLite.futureCash.freeCollateral(address),
             web3.getNetwork(),
-            swapnetLite.uniswap.getEthToTokenInputPrice(ethers.constants.WeiPerEther)
+            swapnetLite.uniswap.getEthToTokenInputPrice(ethers.constants.WeiPerEther),
+            swapnetLite.futureCash.G_PERIOD_SIZE()
           ]).then((values) => {
             this.setState({
               address: address,
@@ -83,7 +85,8 @@ export default class App extends React.Component<AppProp, AppState> {
               account: values[3],
               freeCollateral: values[4],
               network: values[5],
-              ethTokenPrice: values[6]
+              ethTokenPrice: values[6],
+              periodSize: values[7]
             });
           })
 
@@ -157,13 +160,17 @@ export default class App extends React.Component<AppProp, AppState> {
                 swapnetLite={this.state.swapnetLite}
                 currentBlockNumber={this.state.currentBlockNumber}
                 freeCollateral={this.state.freeCollateral}
+                periodSize={this.state.periodSize}
               />
             </Tab>
             <Tab title="Cash Ladder">
               <CashLadder account={this.state.account} />
             </Tab>
             <Tab title="Transaction History">
-              <TransactionHistory account={this.state.account} />
+              <TransactionHistory 
+                account={this.state.account}
+                periodSize={this.state.periodSize}
+              />
             </Tab>
           </Tabs>
         </Row>

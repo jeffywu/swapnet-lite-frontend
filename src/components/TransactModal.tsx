@@ -311,6 +311,7 @@ interface LendBorrowProps {
   currentBlockNumber: number;
   liquidityFee: BigNumber;
   freeCollateral: BigNumber;
+  periodSize: number;
 }
 
 export class Lend extends React.Component<LendBorrowProps, LendBorrowState> {
@@ -357,7 +358,7 @@ export class Lend extends React.Component<LendBorrowProps, LendBorrowState> {
             .mul(this.props.maturity.totalCollateral))
             .div(this.props.maturity.totalCollateral.sub(fee).add(amount))
         )
-      let projectedRate = calculateAnnualizedRate(amount, futureCash);
+      let projectedRate = calculateAnnualizedRate(amount, futureCash, this.props.periodSize);
 
       this.setState({
         inputAmount: event.target.value,
@@ -472,7 +473,7 @@ export class Borrow extends React.Component<LendBorrowProps, LendBorrowState> {
 
       let fee = futureCash.mul(this.props.liquidityFee).div(ethers.constants.WeiPerEther);
 
-      let projectedRate = calculateAnnualizedRate(amount, futureCash);
+      let projectedRate = calculateAnnualizedRate(amount, futureCash, this.props.periodSize);
 
       this.setState({
         inputAmount: event.target.value,

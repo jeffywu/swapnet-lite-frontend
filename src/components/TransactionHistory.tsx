@@ -6,7 +6,10 @@ import React from "react";
 
 const HELPTEXT = "These are the trades that have been placed in your account."
 
-export class TransactionHistory extends React.Component<{account: SwapnetAccount}, {}> {
+export class TransactionHistory extends React.Component<{
+  account: SwapnetAccount,
+  periodSize: number
+}, {}> {
 
   render() {
     if (this.props.account === undefined || this.props.account.transactions.length === 0) {
@@ -38,8 +41,13 @@ export class TransactionHistory extends React.Component<{account: SwapnetAccount
                     <td>{formatBigInt(t.daiAmount)} Dai</td>
                     <td>{formatBigInt(t.futureCash)} Dai</td>
                     <td>{
-                      formatAnnualizedRate(calculateAnnualizedRate(new BigNumber(t.daiAmount.toString()),
-                        new BigNumber(t.futureCash.toString())))
+                      formatAnnualizedRate(
+                        calculateAnnualizedRate(
+                          new BigNumber(t.daiAmount.toString()),
+                          new BigNumber(t.futureCash.toString()),
+                          this.props.periodSize
+                        )
+                      )
                     }</td>
                   </tr>
                 );

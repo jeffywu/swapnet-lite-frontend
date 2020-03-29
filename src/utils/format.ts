@@ -6,19 +6,32 @@ export const BASIS_POINT = RATE_PRECISION / 100;
 export const BALANCE_PRECISION = 1_000_000_000_000_000;
 const AVERAGE_BLOCK_TIME_MS = parseInt(process.env.REACT_APP_AVERAGE_BLOCK_TIME_MS as string);
 const GENESIS_BLOCK_TIME_MS = parseInt(process.env.REACT_APP_GENESIS_BLOCK_TIME_MS as string);
+const MS_IN_YEAR = 31536000000
 
 export function formatBlock(maturity: number): string {
   let blockTime = new Date(maturity * AVERAGE_BLOCK_TIME_MS + GENESIS_BLOCK_TIME_MS);
   return `${blockTime.toLocaleDateString()} (Block ${maturity})`;
 }
 
-export function calculateAnnualizedRate(dai: BigNumber, futureCash: BigNumber): BigNumber {
+export function calculateAnnualizedRate(dai: BigNumber, futureCash: BigNumber, periodSize: number): BigNumber {
+  if (periodSize == 0) return new BigNumber(0);
+
+  const multiplier = MS_IN_YEAR / (periodSize * AVERAGE_BLOCK_TIME_MS);
+
   return futureCash
           .sub(dai)
           .mul(RATE_PRECISION)
           .div(dai)
-          .mul(12)
+          .mul(multiplier * RATE_PRECISION)
+          .div(RATE_PRECISION)
           .add(RATE_PRECISION)
+}
+
+export function annualizeRate(rate: number, periodSize: number): number {
+  if (periodSize == 0) return 0;
+
+  const multiplier = MS_IN_YEAR / (periodSize * AVERAGE_BLOCK_TIME_MS);
+  return ((rate - 1) * multiplier + 1);
 }
 
 export function formatAnnualizedRate(rate: BigNumber): string {

@@ -3,7 +3,7 @@ import { BigNumber } from "ethers/utils";
 import { SwapnetAccount } from "../queries";
 import { SwapnetLite } from "../utils/swapnetLite";
 import { Table } from 'react-materialize';
-import { formatRate, formatBlock } from "../utils/format";
+import { formatRate, formatBlock, annualizeRate } from "../utils/format";
 import { Lend, Borrow } from "./TransactModal";
 
 const HELPTEXT = "Lend and Borrow Dai at fixed rates for these maturities.";
@@ -26,6 +26,7 @@ interface MarketTableProps {
   swapnetLite: SwapnetLite;
   currentBlockNumber: number;
   freeCollateral: BigNumber;
+  periodSize: number;
 }
 
 export class MarketTable extends React.Component<MarketTableProps, MarketTableState> {
@@ -88,10 +89,11 @@ export class MarketTable extends React.Component<MarketTableProps, MarketTableSt
                       currentBlockNumber={this.props.currentBlockNumber}
                       liquidityFee={this.state.liquidityFee}
                       freeCollateral={this.props.freeCollateral}
+                      periodSize={this.props.periodSize}
                     />
                   </td>
                   <td>
-                    <h6>{formatRate(m.marketRate)}</h6>
+                    <h6>{formatRate(annualizeRate(m.marketRate, this.props.periodSize))}</h6>
                   </td>
                   <td>
                     <Borrow 
@@ -102,6 +104,7 @@ export class MarketTable extends React.Component<MarketTableProps, MarketTableSt
                       currentBlockNumber={this.props.currentBlockNumber}
                       liquidityFee={this.state.liquidityFee}
                       freeCollateral={this.props.freeCollateral}
+                      periodSize={this.props.periodSize}
                     />
                   </td>
                 </tr>)
