@@ -39,14 +39,14 @@
 
 .tab a.active {
   color:rgb(252, 234, 37)!important;
-  background-color:#448AFF!important;
+  background-color:#b2dfdb!important;
 }
 .tabs .tab a:hover {
   background-color: #bcaaa4!important;
   color:#FFFFFF!important;
 }
 .tabs .tab a {
-  color: #efebe9!important;
+  color: #494f5c!important;
 }
 .tabs .indicator{
   background-color:#FFFFFF!important;

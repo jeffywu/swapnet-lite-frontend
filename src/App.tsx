@@ -116,7 +116,7 @@ export default class App extends React.Component<AppProp, AppState> {
 
   render() {
     return (
-      <div className="App deep-purple white-text">
+      <div className="App white-text">
         <Row>
           <Col s={3} >
             <p className="left-align">
@@ -150,7 +150,7 @@ export default class App extends React.Component<AppProp, AppState> {
         <Row className="container">
         </Row>
         <Row className="container" style={{ marginTop: '2.5em'}}>
-          <Tabs className="deep-purple lighten-1">
+          <Tabs className="teal lighten-3">
             <Tab title="Lend/Borrow">
               <MarketTable 
                 account={this.state.account}
